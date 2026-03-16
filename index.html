@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>What's Your Clay Blocker? | Serena Creando</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F7F3EE;
+    --sand: #E8DDD0;
+    --terracotta: #C4714A;
+    --terracotta-light: #E8A882;
+    --terracotta-dark: #8B4A2A;
+    --clay-brown: #7A5C44;
+    --warm-black: #2C2018;
+    --muted: #8A7968;
+    --progress-bg: #DDD3C4;
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--warm-black);
+  }
+
+  body {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem 4rem;
+  }
+
+  #quiz-wrap {
+    width: 100%;
+    max-width: 520px;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 8px 48px rgba(44,32,24,0.10);
+  }
+
+  .bg-texture {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(circle at 20% 80%, rgba(196,113,74,0.10) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(122,92,68,0.07) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .screen { position: relative; z-index: 1; }
+
+  /* WELCOME */
+  #screen-welcome {
+    padding: 3rem 2.5rem 2.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .clay-icon {
+    width: 60px; height: 60px;
+    background: var(--terracotta);
+    border-radius: 50% 40% 50% 40%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+  }
+  .clay-icon svg { width: 30px; height: 30px; fill: white; }
+
+  .welcome-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+  }
+
+  .welcome-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 500;
+    color: var(--warm-black);
+    line-height: 1.15;
+    max-width: 380px;
+  }
+  .welcome-title em { font-style: italic; color: var(--terracotta); }
+
+  .welcome-sub {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 340px;
+    line-height: 1.65;
+  }
+
+  .welcome-meta {
+    display: flex; gap: 1.5rem; justify-content: center;
+    font-size: 12px; color: var(--muted);
+  }
+  .welcome-meta span { display: flex; align-items: center; gap: 5px; }
+
+  .btn-primary {
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    padding: 15px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.01em;
+    margin-top: 0.5rem;
+  }
+  .btn-primary:hover { background: var(--terracotta-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  /* QUIZ */
+  #screen-quiz { padding: 2rem 2.25rem 2.5rem; }
+
+  .progress-wrap { margin-bottom: 1.75rem; }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 9px;
+  }
+  .progress-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+  }
+  .progress-count { font-size: 12px; color: var(--muted); }
+  .progress-bar-bg {
+    height: 3px;
+    background: var(--progress-bg);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--terracotta);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .question-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--warm-black);
+    line-height: 1.3;
+    margin-bottom: 1.5rem;
+  }
+
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option-btn {
+    background: white;
+    border: 1.5px solid var(--sand);
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--warm-black);
+    line-height: 1.45;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .option-btn:hover { border-color: var(--terracotta-light); background: #FDF6F2; }
+  .option-btn.selected { border-color: var(--terracotta); background: #FDF0EA; }
+
+  .option-letter {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    min-width: 16px;
+    padding-top: 1px;
+  }
+  .option-btn.selected .option-letter { color: var(--terracotta); }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.75rem;
+  }
+
+  .btn-next {
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    padding: 12px 30px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s, transform 0.1s;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .btn-next.active { opacity: 1; pointer-events: all; }
+  .btn-next.active:hover { background: var(--terracotta-dark); }
+  .btn-next.active:active { transform: scale(0.98); }
+
+  /* EMAIL */
+  #screen-email {
+    padding: 2.5rem 2.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .email-badge {
+    background: #FDF0EA;
+    border: 1px solid var(--terracotta-light);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--terracotta-dark);
+  }
+
+  .email-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--warm-black);
+    line-height: 1.2;
+    max-width: 320px;
+  }
+  .email-title em { font-style: italic; color: var(--terracotta); }
+
+  .email-sub {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 300px;
+    line-height: 1.65;
+  }
+
+  .email-form {
+    width: 100%;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 0.5rem;
+  }
+
+  .email-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid var(--sand);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--warm-black);
+    background: white;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .email-input::placeholder { color: var(--muted); }
+  .email-input:focus { border-color: var(--terracotta); }
+
+  .email-privacy { font-size: 11px; color: var(--muted); margin-top: 0.25rem; }
+
+  /* RESULT */
+  #screen-result { padding: 2rem 2.25rem 2.5rem; }
+
+  .result-header { text-align: center; margin-bottom: 1.5rem; }
+
+  .result-blocker-tag {
+    display: inline-block;
+    background: var(--terracotta);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 100px;
+    margin-bottom: 0.75rem;
+  }
+
+  .result-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--warm-black);
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+  }
+  .result-title em { font-style: italic; color: var(--terracotta); }
+
+  .result-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+
+  .result-divider { height: 1px; background: var(--sand); margin: 1.25rem 0; }
+
+  .result-section-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 0.75rem;
+  }
+
+  .result-description {
+    font-size: 14px;
+    color: var(--clay-brown);
+    line-height: 1.7;
+    background: #FDF6F2;
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    border-left: 3px solid var(--terracotta-light);
+    margin-bottom: 1rem;
+  }
+
+  .result-signs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+
+  .result-sign {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--warm-black);
+    line-height: 1.45;
+  }
+
+  .sign-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .result-cta-box {
+    background: var(--warm-black);
+    border-radius: 14px;
+    padding: 1.5rem 1.5rem;
+    text-align: center;
+    margin-top: 1.25rem;
+  }
+
+  .result-cta-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--terracotta-light);
+    margin-bottom: 0.4rem;
+  }
+
+  .result-cta-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: white;
+    line-height: 1.3;
+    margin-bottom: 0.85rem;
+  }
+
+  .btn-cta {
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    padding: 13px 30px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-cta:hover { background: var(--terracotta-light); }
+
+  .score-bars { display: flex; flex-direction: column; gap: 9px; margin-bottom: 1rem; }
+
+  .score-bar-row { display: flex; align-items: center; gap: 10px; }
+
+  .score-bar-label { color: var(--muted); min-width: 70px; font-size: 12px; }
+
+  .score-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--sand);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    background: var(--terracotta);
+    border-radius: 6px;
+    transition: width 0.8s ease;
+  }
+
+  .score-bar-pct { color: var(--muted); min-width: 28px; text-align: right; font-size: 12px; }
+
+  .hidden { display: none !important; }
+
+  .fade-in { animation: fadeSlide 0.35s ease both; }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 560px) {
+    body { padding: 0; }
+    #quiz-wrap { border-radius: 0; box-shadow: none; min-height: 100vh; }
+    #screen-welcome { padding: 2.5rem 1.5rem 2rem; }
+    #screen-quiz, #screen-result { padding: 1.5rem 1.25rem 2rem; }
+    #screen-email { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="quiz-wrap">
+  <div class="bg-texture"></div>
+
+  <!-- WELCOME -->
+  <div id="screen-welcome" class="screen fade-in">
+    <div class="clay-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8 2 5 5 5 8c0 2 1 4 2.5 5.5L6 20h12l-1.5-6.5C18 12 19 10 19 8c0-3-3-6-7-6zm0 2c2.8 0 5 2.2 5 4 0 1.5-.8 3-2 4l-.5.5.4 1.5H9.1L9.5 12.5 9 12C7.8 11 7 9.5 7 8c0-1.8 2.2-4 5-4z"/></svg>
+    </div>
+    <p class="welcome-eyebrow">Free quiz · 3 minutes</p>
+    <h1 class="welcome-title">What's your <em>real</em> clay blocker?</h1>
+    <p class="welcome-sub">You're not stuck because you're not talented. Discover what's actually getting in the way — and what to do about it.</p>
+    <div class="welcome-meta">
+      <span>&#x25CF; 13 questions</span>
+      <span>&#x25CF; 3 blocker types</span>
+      <span>&#x25CF; Personalized result</span>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()">Start the quiz</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="screen-quiz" class="screen hidden">
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span class="progress-label" id="q-category">Technique</span>
+        <span class="progress-count" id="q-count">1 / 13</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill" style="width: 7%"></div>
+      </div>
+    </div>
+    <p class="question-text" id="q-text"></p>
+    <div class="options-grid" id="q-options"></div>
+    <div class="quiz-nav">
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- EMAIL GATE -->
+  <div id="screen-email" class="screen hidden fade-in">
+    <div class="email-badge">Almost there!</div>
+    <h2 class="email-title">Your result is <em>ready</em></h2>
+    <p class="email-sub">Enter your email to unlock your blocker profile and get a personalized path forward.</p>
+    <div class="email-form">
+      <input type="text" id="email-name" class="email-input" placeholder="Your first name" />
+      <input type="email" id="email-addr" class="email-input" placeholder="Your email address" />
+      <button class="btn-primary" onclick="submitEmail()" style="border-radius: 12px; width: 100%;">Show me my result</button>
+    </div>
+    <p class="email-privacy">No spam. Just your result + a few helpful tips. Unsubscribe anytime.</p>
+  </div>
+
+  <!-- RESULT -->
+  <div id="screen-result" class="screen hidden fade-in">
+    <div class="result-header">
+      <div class="result-blocker-tag" id="result-tag">Technique Blocker</div>
+      <h2 class="result-title" id="result-title"></h2>
+      <p class="result-subtitle" id="result-subtitle"></p>
+    </div>
+    <div class="result-divider"></div>
+    <p class="result-section-title">Your blocker breakdown</p>
+    <div class="score-bars" id="score-bars"></div>
+    <div class="result-divider"></div>
+    <p class="result-section-title">What this really means</p>
+    <div class="result-description" id="result-desc"></div>
+    <p class="result-section-title">Signs you recognize yourself in</p>
+    <div class="result-signs" id="result-signs"></div>
+    <div class="result-cta-box">
+      <p class="result-cta-label">The method that solves this</p>
+      <p class="result-cta-text" id="result-cta-text"></p>
+      <a href="https://www.serenacreando.com/pages/serena-pro-method" class="btn-cta" target="_blank">See the Serena Pro Method</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    cat: "Technique",
+    text: "When you try to build a piece taller than a mug, what usually happens?",
+    opts: ["It collapses or cracks before I'm done", "It works technically but the finish looks rough", "It turns out fine — my issue is it doesn't feel like 'me'", "It's fine technically, I just have no idea what to charge for it"],
+    scores: [[3,0,0],[2,1,0],[0,3,0],[0,0,3]]
+  },
+  {
+    cat: "Technique",
+    text: "How would you describe the walls of the pieces you make right now?",
+    opts: ["Too thick and uneven — I can't control them yet", "Technically okay, but they all look like everyone else's", "Pretty good — my struggle is finding my own aesthetic", "Good enough to sell, but I freeze when I have to name a price"],
+    scores: [[3,0,0],[1,2,0],[0,3,0],[0,0,3]]
+  },
+  {
+    cat: "Technique",
+    text: "When something goes wrong mid-build, what happens?",
+    opts: ["I don't know why it failed so I can't fix it", "I fix it technically but the piece still feels uninspired", "I finish it but feel like it could have been made by anyone", "I finish it fine — the hard part is deciding what to do with it after"],
+    scores: [[3,0,0],[1,2,0],[0,3,0],[0,1,2]]
+  },
+  {
+    cat: "Style",
+    text: "If someone saw your pieces next to 10 other artists' work, what would happen?",
+    opts: ["They'd know mine are the ones that look less polished technically", "They wouldn't be able to tell — mine blend in with everyone else's", "They might recognize them, but I couldn't tell you why or what my 'thing' is", "They'd like them — I just don't feel confident enough to price them well"],
+    scores: [[3,0,0],[0,3,0],[0,3,0],[0,0,3]]
+  },
+  {
+    cat: "Style",
+    text: "When you sit down to create freely with no tutorial or reference, what happens?",
+    opts: ["I freeze because I don't have enough technical foundation yet", "I start something but it ends up looking like what I've seen on Instagram", "I make things but they feel safe, predictable, not distinctly mine", "I can create freely — the scary part is what to charge when I'm done"],
+    scores: [[3,0,0],[0,2,1],[0,3,0],[0,0,3]]
+  },
+  {
+    cat: "Style",
+    text: "How do you feel about the aesthetic of your pieces right now?",
+    opts: ["They look beginner — I don't have the technical skill yet to make them look pro", "Generic — nice, but they could have been made by anyone", "Close to what I want, but I can't pin down what makes them uniquely mine", "Actually pretty good — I just have no idea how to price them without feeling guilty"],
+    scores: [[3,0,0],[0,3,0],[0,3,0],[0,0,3]]
+  },
+  {
+    cat: "Style",
+    text: "When you scroll through ceramics on Instagram, what's your honest feeling?",
+    opts: ["Frustrated — I see what's possible but I can't technically get there yet", "Like I copy without meaning to because I don't have my own visual language", "Inspired but disconnected — I love it all and that's the problem, nothing feels 'mine'", "Jealous of how unbothered they seem about charging what they charge"],
+    scores: [[3,0,0],[0,3,0],[0,3,0],[0,0,3]]
+  },
+  {
+    cat: "Pricing",
+    text: "When someone asks how much a piece costs, what happens inside you?",
+    opts: ["I freeze — I don't feel like the piece is technically good enough yet to charge much", "I'm not sure it's different enough from other artists' work to justify a high price", "I panic and quote low because I don't want them to think I'm overcharging", "I have no formula — I just pick a number and hope it sounds okay"],
+    scores: [[2,0,1],[0,2,1],[0,0,3],[0,0,3]]
+  },
+  {
+    cat: "Pricing",
+    text: "Have you ever given work away or sold it for less than it was worth?",
+    opts: ["Yes — I didn't feel my technique was good enough to ask for more", "Yes — my style isn't distinctive enough for people to see the value", "Yes — I always do this, I just can't bring myself to name a real price", "Yes — I calculated a fair price but then lowered it out of fear at the last second"],
+    scores: [[2,0,1],[0,2,1],[0,0,3],[0,0,3]]
+  },
+  {
+    cat: "Pricing",
+    text: "When you see ceramists charging $80–$200+ per piece, what do you think?",
+    opts: ["Their technique is on another level — mine isn't there yet", "Their style is so defined that people pay for the identity, not just the object", "They must have a system or a confidence I don't have — I wouldn't know where to start", "I know my work is worth that, I just can't make myself ask for it"],
+    scores: [[2,0,1],[0,2,1],[0,0,3],[0,0,3]]
+  },
+  {
+    cat: "Big picture",
+    text: "What's the most honest reason you haven't fully committed to ceramics yet?",
+    opts: ["I keep hitting technical walls that make me feel like I'm not cut out for this", "I don't feel like I have a distinct enough voice for people to care", "I can't imagine people paying real money for what I make right now", "I'm afraid of starting and not finishing — again"],
+    scores: [[3,0,0],[0,3,0],[0,0,3],[1,1,1]]
+  },
+  {
+    cat: "Big picture",
+    text: "Which of these would feel like the biggest transformation 6 months from now?",
+    opts: ["Building complex pieces that don't collapse — and knowing exactly why they work", "Having a visual signature so clear that people recognize my work instantly", "Charging what my work is actually worth — without guilt, without hesitation", "Honestly? All three. I need all of it."],
+    scores: [[3,0,0],[0,3,0],[0,0,3],[1,1,1]]
+  },
+  {
+    cat: "Big picture",
+    text: "Finish this sentence: 'The thing that stops me from taking ceramics seriously is...'",
+    opts: ["...I don't have the technical skills to make pieces I'm proud of yet", "...I don't feel like my work is different enough to stand out", "...I wouldn't know what to charge or how to sell without feeling awkward", "...honestly, I'm not sure — it's a mix of all of the above"],
+    scores: [[3,0,0],[0,3,0],[0,0,3],[1,1,1]]
+  }
+];
+
+const results = {
+  T: {
+    tag: "Technique Blocker",
+    title: "Your hands know <em>more</em> than you think",
+    subtitle: "Your ideas are there — you just need the structural foundations that make them possible.",
+    desc: "The gap between what you imagine and what you create isn't talent. It's the absence of specific technical foundations that nobody taught you explicitly. When you know why clay collapses, walls become uneven, or pieces crack — you stop guessing and start controlling the outcome.",
+    signs: ["Your pieces collapse when you try something more complex","You can't achieve the clean finish you see in other artists' work","You know the basics but not how to apply them to harder pieces","You've given up on a piece mid-build more than once"],
+    cta: "The method starts exactly where you are — and walks you through technique until it becomes second nature."
+  },
+  S: {
+    tag: "Style Blocker",
+    title: "Your voice is already there. <em>It just needs permission.</em>",
+    subtitle: "You have the desire and even some technique — but you feel invisible in a sea of similar-looking work.",
+    desc: "Style isn't something you're born with. It's a pattern that emerges from intentional practice, reflection, and permission to stop copying. The artists whose work is instantly recognizable didn't start that way — they built it, piece by piece, until their instincts became unmistakable.",
+    signs: ["You copy without meaning to because you don't know how to create original work","Your pieces could have been made by anyone","You feel frustrated scrolling Instagram knowing you have something to say but can't find it yet","You have no idea what makes your work distinctly yours"],
+    cta: "Module 12 of the Serena Pro Method is built entirely around helping you find and define your creative signature."
+  },
+  P: {
+    tag: "Pricing Blocker",
+    title: "The price was never the problem. <em>The guilt was.</em>",
+    subtitle: "You create beautiful things — and then charge as if they were made by someone you don't fully believe in. Yet.",
+    desc: "Pricing confusion isn't a math problem. It's a self-worth problem dressed up as a math problem. When you don't have a system to calculate your real value, emotion fills the gap — and emotion almost always undersells. Once you have the formulas, the guilt dissolves on its own.",
+    signs: ["You've quoted too low in a panic when someone asked your price","You've given work away to avoid the discomfort of naming a number","Seeing other ceramists charge $100+ feels like they have something you don't","You haven't sold yet, partially because you can't imagine people paying"],
+    cta: "The Pricing System in Serena Pro gives you exact formulas, a 4-tool Excel calculator, and the psychology to charge without guilt."
+  },
+  ST: {
+    tag: "Technique + Style Blocker",
+    title: "You have the drive. <em>Now you need the tools.</em>",
+    subtitle: "You're blocked at two levels at once — the technical and the creative. That's not a problem, it's actually a very clear starting point.",
+    desc: "You feel it from both sides: pieces that don't behave the way you want them to, and a creative voice that hasn't fully emerged yet. These two blockers are more connected than they seem — often, your style can't develop because technique keeps getting in the way. When your hands stop fighting the clay, your eye starts leading.",
+    signs: ["Your pieces don't always do what you planned technically — and when they do, they still don't feel distinctly yours","You admire other artists for both their skill and their recognizable look","You're not sure which to work on first — and that uncertainty keeps you stuck","You follow tutorials because creating freely still feels too risky"],
+    cta: "Phases 1 and 2 of Serena Pro build your technical foundation — and Module 12 is where your style finally emerges from it."
+  },
+  PT: {
+    tag: "Technique + Pricing Blocker",
+    title: "Build it well. <em>Then charge what it's worth.</em>",
+    subtitle: "You're working on two things at once: getting the craft right, and learning to value what you make.",
+    desc: "Technique and pricing feel like separate problems, but they share the same root — confidence. When you can build a piece and understand exactly why it worked, you stop undervaluing it. The two things feed each other: better technical clarity leads to higher perceived value, which makes the conversation about price feel completely different.",
+    signs: ["You sometimes feel like your pieces aren't 'ready' to sell yet — technically or confidence-wise","You'd charge more if you felt more certain about the quality","The idea of pricing feels just as uncomfortable as the idea of a piece collapsing","You're hard on yourself about both the craft and the business side"],
+    cta: "Serena Pro builds the technical foundation first — and the pricing system at the end will make complete sense once you've seen what you're capable of making."
+  },
+  PS: {
+    tag: "Style + Pricing Blocker",
+    title: "You can make it. <em>Now own it.</em>",
+    subtitle: "Your technique is there — what's missing is the belief that what you make is distinct enough and valuable enough.",
+    desc: "You've moved past the basic technical struggles, but two quieter blockers are holding you back: you're not sure your work stands out enough to deserve attention, and you're not sure it's valuable enough to deserve a real price. These two doubts live in the same place — and solving one almost always unlocks the other.",
+    signs: ["Your technique is solid but your pieces feel like they could have been made by anyone","You hesitate to post or sell because you're not sure what makes your work worth following or buying","You've sold things, but always felt vaguely guilty about the price","You're waiting to feel 'ready' — but you're not sure what ready looks like"],
+    cta: "Module 12 will help you find your creative signature — and the pricing system will give you the framework to charge for it without apology."
+  },
+  TSP: {
+    tag: "The Full Blocker",
+    title: "You need all of it. <em>And that's okay.</em>",
+    subtitle: "Technique, style, pricing — you're carrying all three. Which means the Serena Pro Method was built exactly for you.",
+    desc: "Most people think they have one problem. You're honest enough to know you have three — and that honesty is actually your biggest advantage. You're not stuck on one thing, you're at the beginning of a complete transformation. The method doesn't just address one blocker. It was designed to take someone exactly where you are and walk them through all three, in order, until each one is resolved.",
+    signs: ["Pieces that don't always cooperate technically","A creative voice that's still searching for its shape","A pricing approach that's more panic than system","The sense that everything needs to shift at once — and that feels overwhelming"],
+    cta: "This is exactly who Serena Pro was built for. All three pillars. One method. One transformation."
+  }
+};
+
+let current = 0;
+let scores = { T: 0, S: 0, P: 0 };
+let selected = null;
+
+function startQuiz() {
+  document.getElementById('screen-welcome').classList.add('hidden');
+  const qs = document.getElementById('screen-quiz');
+  qs.classList.remove('hidden');
+  qs.classList.add('fade-in');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  document.getElementById('q-category').textContent = q.cat;
+  document.getElementById('q-count').textContent = (current + 1) + ' / ' + questions.length;
+  document.getElementById('progress-fill').style.width = Math.round((current + 1) / questions.length * 100) + '%';
+  document.getElementById('q-text').textContent = q.text;
+  selected = null;
+  document.getElementById('btn-next').classList.remove('active');
+
+  const letters = ['A','B','C','D'];
+  const grid = document.getElementById('q-options');
+  grid.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="option-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+    btn.onclick = () => selectOption(i, btn);
+    grid.appendChild(btn);
+  });
+}
+
+function selectOption(idx, btn) {
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selected = idx;
+  document.getElementById('btn-next').classList.add('active');
+}
+
+function nextQuestion() {
+  if (selected === null) return;
+  const q = questions[current];
+  const s = q.scores[selected];
+  scores.T += s[0];
+  scores.S += s[1];
+  scores.P += s[2];
+
+  current++;
+  if (current >= questions.length) {
+    showEmail();
+  } else {
+    const qs = document.getElementById('screen-quiz');
+    qs.style.transition = 'opacity 0.2s';
+    qs.style.opacity = '0';
+    setTimeout(() => {
+      renderQuestion();
+      qs.style.opacity = '1';
+    }, 200);
+  }
+}
+
+function showEmail() {
+  document.getElementById('screen-quiz').classList.add('hidden');
+  document.getElementById('screen-email').classList.remove('hidden');
+}
+
+const ZAPIER_WEBHOOK = 'PASTE_YOUR_ZAPIER_WEBHOOK_URL_HERE';
+
+const BLOCKER_TAG = {
+  T:   'blocker-technique',
+  S:   'blocker-style',
+  P:   'blocker-pricing',
+  ST:  'blocker-technique-style',
+  PT:  'blocker-technique-pricing',
+  PS:  'blocker-style-pricing',
+  TSP: 'blocker-all-three'
+};
+
+async function submitEmail() {
+  const name  = document.getElementById('email-name').value.trim();
+  const email = document.getElementById('email-addr').value.trim();
+
+  if (!email || !email.includes('@')) {
+    document.getElementById('email-addr').style.borderColor = '#C4714A';
+    document.getElementById('email-addr').focus();
+    return;
+  }
+
+  const btn = document.querySelector('#screen-email .btn-primary');
+  btn.textContent = 'Loading...';
+  btn.style.opacity = '0.7';
+  btn.style.pointerEvents = 'none';
+
+  const winner = getWinner();
+  const payload = {
+    name,
+    email,
+    blocker:     winner,
+    blocker_tag: BLOCKER_TAG[winner],
+    score_t:     scores.T,
+    score_s:     scores.S,
+    score_p:     scores.P
+  };
+
+  try {
+    if (ZAPIER_WEBHOOK !== 'PASTE_YOUR_ZAPIER_WEBHOOK_URL_HERE') {
+      await fetch(ZAPIER_WEBHOOK, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+    } else {
+      console.log('[Serena Quiz — connect Zapier to go live]', payload);
+    }
+  } catch (err) {
+    console.warn('Zapier send failed (showing result anyway):', err);
+  }
+
+  showResult(name);
+}
+
+function getWinner() {
+  const total = Math.max(scores.T + scores.S + scores.P, 1);
+  const pT = scores.T / total;
+  const pS = scores.S / total;
+  const pP = scores.P / total;
+  const sorted = [['T',pT],['S',pS],['P',pP]].sort((a,b) => b[1]-a[1]);
+  const gap = sorted[0][1] - sorted[1][1];
+  const thirdGap = sorted[0][1] - sorted[2][1];
+
+  if (gap < 0.15) {
+    if (thirdGap < 0.15) return 'TSP';
+    const top2 = [sorted[0][0], sorted[1][0]].sort().join('');
+    return top2;
+  }
+  return sorted[0][0];
+}
+
+function showResult(name) {
+  document.getElementById('screen-email').classList.add('hidden');
+  const screen = document.getElementById('screen-result');
+  screen.classList.remove('hidden');
+
+  const winner = getWinner();
+  const r = results[winner];
+  const total = Math.max(scores.T + scores.S + scores.P, 1);
+
+  document.getElementById('result-tag').textContent = r.tag;
+  document.getElementById('result-title').innerHTML = r.title;
+  document.getElementById('result-subtitle').textContent = r.subtitle;
+  document.getElementById('result-desc').textContent = r.desc;
+  document.getElementById('result-cta-text').textContent = r.cta;
+
+  const barsEl = document.getElementById('score-bars');
+  barsEl.innerHTML = '';
+  [{key:'T',label:'Technique'},{key:'S',label:'Style'},{key:'P',label:'Pricing'}].forEach(c => {
+    const pct = Math.round(scores[c.key] / total * 100);
+    barsEl.innerHTML += '<div class="score-bar-row"><span class="score-bar-label">' + c.label + '</span><div class="score-bar-track"><div class="score-bar-fill" style="width:' + pct + '%"></div></div><span class="score-bar-pct">' + pct + '%</span></div>';
+  });
+
+  const signsEl = document.getElementById('result-signs');
+  signsEl.innerHTML = '';
+  r.signs.forEach(s => {
+    signsEl.innerHTML += '<div class="result-sign"><div class="sign-dot"></div><span>' + s + '</span></div>';
+  });
+}
+</script>
+</body>
+</html>
