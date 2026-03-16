@@ -770,6 +770,7 @@ async function submitEmail() {
     if (ZAPIER_WEBHOOK !== 'PASTE_YOUR_ZAPIER_WEBHOOK_URL_HERE') {
       await fetch(ZAPIER_WEBHOOK, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
     } else {
