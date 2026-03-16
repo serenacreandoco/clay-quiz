@@ -489,7 +489,8 @@
     <h2 class="email-title">Your result is <em>ready</em></h2>
     <p class="email-sub">Enter your email to unlock your blocker profile and get a personalized path forward.</p>
     <div class="email-form">
-      <input type="text" id="email-name" class="email-input" placeholder="Your first name" />
+      <input type="text" id="email-fname" class="email-input" placeholder="Your first name" />
+      <input type="text" id="email-lname" class="email-input" placeholder="Your last name" />
       <input type="email" id="email-addr" class="email-input" placeholder="Your email address" />
       <button class="btn-primary" onclick="submitEmail()" style="border-radius: 12px; width: 100%;">Show me my result</button>
     </div>
@@ -741,9 +742,15 @@ const BLOCKER_TAG = {
 };
 
 async function submitEmail() {
-  const name  = document.getElementById('email-name').value.trim();
+  const fname = document.getElementById('email-fname').value.trim();
+  const lname = document.getElementById('email-lname').value.trim();
   const email = document.getElementById('email-addr').value.trim();
 
+  if (!fname) {
+    document.getElementById('email-fname').style.borderColor = '#C4714A';
+    document.getElementById('email-fname').focus();
+    return;
+  }
   if (!email || !email.includes('@')) {
     document.getElementById('email-addr').style.borderColor = '#C4714A';
     document.getElementById('email-addr').focus();
@@ -757,13 +764,14 @@ async function submitEmail() {
 
   const winner = getWinner();
   const payload = {
-    name,
+    name: fname,
+    last_name: lname,
     email,
-    blocker:     winner,
+    blocker: winner,
     blocker_tag: BLOCKER_TAG[winner],
-    score_t:     scores.T,
-    score_s:     scores.S,
-    score_p:     scores.P
+    score_t: scores.T,
+    score_s: scores.S,
+    score_p: scores.P
   };
 
   try {
@@ -774,13 +782,13 @@ async function submitEmail() {
         body: JSON.stringify(payload)
       });
     } else {
-      console.log('[Serena Quiz — connect Zapier to go live]', payload);
+      console.log('[Serena Quiz — connect Make to go live]', payload);
     }
   } catch (err) {
-    console.warn('Zapier send failed (showing result anyway):', err);
+    console.warn('Make send failed (showing result anyway):', err);
   }
 
-  showResult(name);
+  showResult(fname);
 }
 
 function getWinner() {
