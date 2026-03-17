@@ -458,7 +458,7 @@
     <h1 class="welcome-title">What's your <em>real</em> clay blocker?</h1>
     <p class="welcome-sub">You're not stuck because you're not talented. Discover what's actually getting in the way — and what to do about it.</p>
     <div class="welcome-meta">
-      <span>&#x25CF; 13 questions</span>
+      <span>&#x25CF; 8 questions</span>
       <span>&#x25CF; 3 blocker types</span>
       <span>&#x25CF; Personalized result</span>
     </div>
@@ -489,8 +489,7 @@
     <h2 class="email-title">Your result is <em>ready</em></h2>
     <p class="email-sub">Enter your email to unlock your blocker profile and get a personalized path forward.</p>
     <div class="email-form">
-      <input type="text" id="email-fname" class="email-input" placeholder="Your first name" />
-      <input type="text" id="email-lname" class="email-input" placeholder="Your last name" />
+      <input type="text" id="email-fname" class="email-input" placeholder="Your full name" />
       <input type="email" id="email-addr" class="email-input" placeholder="Your email address" />
       <button class="btn-primary" onclick="submitEmail()" style="border-radius: 12px; width: 100%;">Show me my result</button>
     </div>
@@ -531,12 +530,6 @@ const questions = [
   },
   {
     cat: "Technique",
-    text: "How would you describe the walls of the pieces you make right now?",
-    opts: ["Too thick and uneven — I can't control them yet", "Technically okay, but they all look like everyone else's", "Pretty good — my struggle is finding my own aesthetic", "Good enough to sell, but I freeze when I have to name a price"],
-    scores: [[3,0,0],[1,2,0],[0,3,0],[0,0,3]]
-  },
-  {
-    cat: "Technique",
     text: "When something goes wrong mid-build, what happens?",
     opts: ["I don't know why it failed so I can't fix it", "I fix it technically but the piece still feels uninspired", "I finish it but feel like it could have been made by anyone", "I finish it fine — the hard part is deciding what to do with it after"],
     scores: [[3,0,0],[1,2,0],[0,3,0],[0,1,2]]
@@ -555,12 +548,6 @@ const questions = [
   },
   {
     cat: "Style",
-    text: "How do you feel about the aesthetic of your pieces right now?",
-    opts: ["They look beginner — I don't have the technical skill yet to make them look pro", "Generic — nice, but they could have been made by anyone", "Close to what I want, but I can't pin down what makes them uniquely mine", "Actually pretty good — I just have no idea how to price them without feeling guilty"],
-    scores: [[3,0,0],[0,3,0],[0,3,0],[0,0,3]]
-  },
-  {
-    cat: "Style",
     text: "When you scroll through ceramics on Instagram, what's your honest feeling?",
     opts: ["Frustrated — I see what's possible but I can't technically get there yet", "Like I copy without meaning to because I don't have my own visual language", "Inspired but disconnected — I love it all and that's the problem, nothing feels 'mine'", "Jealous of how unbothered they seem about charging what they charge"],
     scores: [[3,0,0],[0,3,0],[0,3,0],[0,0,3]]
@@ -569,18 +556,6 @@ const questions = [
     cat: "Pricing",
     text: "When someone asks how much a piece costs, what happens inside you?",
     opts: ["I freeze — I don't feel like the piece is technically good enough yet to charge much", "I'm not sure it's different enough from other artists' work to justify a high price", "I panic and quote low because I don't want them to think I'm overcharging", "I have no formula — I just pick a number and hope it sounds okay"],
-    scores: [[2,0,1],[0,2,1],[0,0,3],[0,0,3]]
-  },
-  {
-    cat: "Pricing",
-    text: "Have you ever given work away or sold it for less than it was worth?",
-    opts: ["Yes — I didn't feel my technique was good enough to ask for more", "Yes — my style isn't distinctive enough for people to see the value", "Yes — I always do this, I just can't bring myself to name a real price", "Yes — I calculated a fair price but then lowered it out of fear at the last second"],
-    scores: [[2,0,1],[0,2,1],[0,0,3],[0,0,3]]
-  },
-  {
-    cat: "Pricing",
-    text: "When you see ceramists charging $80–$200+ per piece, what do you think?",
-    opts: ["Their technique is on another level — mine isn't there yet", "Their style is so defined that people pay for the identity, not just the object", "They must have a system or a confidence I don't have — I wouldn't know where to start", "I know my work is worth that, I just can't make myself ask for it"],
     scores: [[2,0,1],[0,2,1],[0,0,3],[0,0,3]]
   },
   {
@@ -595,12 +570,6 @@ const questions = [
     opts: ["Building complex pieces that don't collapse — and knowing exactly why they work", "Having a visual signature so clear that people recognize my work instantly", "Charging what my work is actually worth — without guilt, without hesitation", "Honestly? All three. I need all of it."],
     scores: [[3,0,0],[0,3,0],[0,0,3],[1,1,1]]
   },
-  {
-    cat: "Big picture",
-    text: "Finish this sentence: 'The thing that stops me from taking ceramics seriously is...'",
-    opts: ["...I don't have the technical skills to make pieces I'm proud of yet", "...I don't feel like my work is different enough to stand out", "...I wouldn't know what to charge or how to sell without feeling awkward", "...honestly, I'm not sure — it's a mix of all of the above"],
-    scores: [[3,0,0],[0,3,0],[0,0,3],[1,1,1]]
-  }
 ];
 
 const results = {
@@ -743,7 +712,6 @@ const BLOCKER_TAG = {
 
 async function submitEmail() {
   const fname = document.getElementById('email-fname').value.trim();
-  const lname = document.getElementById('email-lname').value.trim();
   const email = document.getElementById('email-addr').value.trim();
 
   if (!fname) {
@@ -765,7 +733,6 @@ async function submitEmail() {
   const winner = getWinner();
   const payload = {
     name: fname,
-    last_name: lname,
     email,
     blocker: winner,
     blocker_tag: BLOCKER_TAG[winner],
@@ -788,7 +755,7 @@ async function submitEmail() {
     console.warn('Make send failed (showing result anyway):', err);
   }
 
-  showResult(fname);
+  showResult(fname.split(' ')[0]);
 }
 
 function getWinner() {
